@@ -1,2 +1,18 @@
-<h1>THIS IS A STATIC PAGE - NO JS</h1>
-<p>If you see this, the HTML loaded.</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>XSS Test</title>
+</head>
+<body>
+  <h1>Test Page</h1>
+  <script>
+    // 尝试执行 JS
+    alert("✅ XSS SUCCESS! This is your own payload.");
+    
+    // 尝试读 localStorage（如果存在）
+    try {
+      console.log("localStorage keys:", Object.keys(localStorage));
+    } catch(e) {}
+  </script>
+</body>
+</html>
