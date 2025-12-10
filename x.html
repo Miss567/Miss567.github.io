@@ -1,18 +1,2 @@
-<!DOCTYPE html>
-<html>
-<body>
-  <h1 id="status">Loading...</h1>
-  <script>
-    // 方法1：修改页面文本
-    document.getElementById('status').innerText = '✅ JS EXECUTED!';
-
-    // 方法2：尝试弹窗（部分 WebView 会禁用 alert）
-    try {
-      alert('JS Confirmed!');
-    } catch(e) {}
-
-    // 方法3：日志（可通过 adb 查看）
-    console.log('=== JS IS RUNNING ===');
-  </script>
-</body>
-</html>
+<h1>THIS IS A STATIC PAGE - NO JS</h1>
+<p>If you see this, the HTML loaded.</p>
